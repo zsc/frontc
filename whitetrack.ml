@@ -87,7 +87,7 @@ let last_str = ref ""
 let print str =
     let str = chopwhite str in
     if str = "" then ()
-    else if !curidx == noidx || not !enabled then 
+    else if !curidx == noidx ||  !enabled then 
         output_string !out (invent_white() ^ str) 
     else begin
         let srcwhite,srctok = GrowArray.getg tokens !curidx in
