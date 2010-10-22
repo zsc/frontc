@@ -62,6 +62,10 @@ open Cabs
 open Escape
 open Whitetrack
 
+let open_bracket = ref ""
+let close_bracket = ref ""
+let towrap = ref [] 
+
 let version = "Cprint 2.1e 9.1.99 Hugues Cassé"
 
 type loc = { line : int; file : string }
@@ -102,7 +106,7 @@ let roll = ref 0
 
 (* stub out the old-style manual space functions *)
 (* we may implement some of these later *)
-let new_line () = ()
+let new_line () = Printf.fprintf !out "\n"
 let space () = ()
 let indent () = ()
 let unindent () = ()
@@ -802,9 +806,14 @@ and print_def def =
         with Not_found -> print "/* can't print the counter */"
       end;
       setLoc(loc);
+      let fname =
+        match proto with
+          (_, (n, _, _, _)) -> n in
+      if List.mem fname !towrap then print !open_bracket;
       print_single_name proto;
       print_block body;
-      force_new_line ();
+      if List.mem fname !towrap then print !close_bracket;
+      force_new_line ()
 
   | DECDEF (names, loc) ->
       comprint "decdef";
